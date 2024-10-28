@@ -1,10 +1,10 @@
 # Uncomment the required imports before adding the code
-#from django.shortcuts import render
+# from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
-#from django.contrib import messages
-#from datetime import datetime
+# from django.contrib import messages
+# from datetime import datetime
 from .models import CarMake, CarModel
 from .restapis import get_request, analyze_review_sentiments, post_review
 import logging
@@ -44,8 +44,7 @@ def registration(request):
     password = data['password']
     first_name = data['firstName']
     last_name = data['lastName']
-    email = data['email']
-    
+    email = data['email']  
     username_exist = User.objects.filter(username=username).exists()
 
     if not username_exist:
@@ -72,12 +71,10 @@ def get_cars(request):
     count = CarMake.objects.count()
     if count == 0:
         initiate()
-    
     car_models = CarModel.objects.select_related('car_make')
     cars = [
         {"CarModel": car_model.name,
          "CarMake": car_model.car_make.name} for car_model in car_models]
-    
     return JsonResponse({"CarModels": cars})
 
 
@@ -91,11 +88,9 @@ def get_dealer_reviews(request, dealer_id):
     if dealer_id:
         endpoint = f"/fetchReviews/dealer/{dealer_id}"
         reviews = get_request(endpoint)
-        
         for review_detail in reviews:
             response = analyze_review_sentiments(review_detail['review'])
             review_detail['sentiment'] = response['sentiment']
-        
         return JsonResponse({"status": 200, "reviews": reviews})
     return JsonResponse({"status": 400, "message": "Bad Request"})
 
